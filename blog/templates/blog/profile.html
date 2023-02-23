@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+
+{% block main %}
+<div class="container d-flex justify-content-between">
+    <div class="col-3">
+        <div class="card p-2">
+            <h4 class="text-center">{{ user.username }}</h4>
+            <img src="https://cdn-icons-png.flaticon.com/512/21/21104.png" alt="">
+            <p class="text-center">{{ user.first_name }} {{ user.last_name }}</p>
+            <p class="text-center">{{ user.email }}</p>
+            <span class="text-center">Дата регистрации</span>
+            <p class="text-center">{{ user.date_joined }}</p>
+
+        </div>
+    </div>
+    <div class="col-9">
+        {% for article in articles %}
+        <div class="card p-4 m-4">
+            <div class="d-flex justify-content-between">
+                <div class="p-2">
+                    <a href="{{ article.article.get_absolute_url }}">{{ article.article.title }}</a>
+
+                </div>
+                <div class="d-flex justify-content-between">
+                    <p class="p-2">Просмотры: {{ article.article.views }}</p>
+                    <p class="p-2">Лайки: {{ article.likes }}</p>
+                    <p class="p-2">Комментарии: {{ article.comments }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock main %}

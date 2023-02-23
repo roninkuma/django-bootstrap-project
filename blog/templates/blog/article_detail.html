@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+
+{% block main %}
+<div class="container">
+    <div class="d-flex justify-content-between">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <div>
+                        <h5>{{ article.category }}</h5>
+                    </div>
+                    <div>
+                        {% if request.user == article.author %}
+                        <a href="{% url 'update' article.pk %}" class="btn btn-dark">Изменить</a>
+                        <a href="{% url 'delete' article.pk %}" class="btn btn-dark">Удалить</a>
+                        {% endif %}
+                        <a href="{% url 'index' %}" class="btn btn-dark">Назад</a>
+                    </div>
+                </div>
+
+                <img src="{{ article.get_photo }}" alt="">
+
+                <h3>{{ article.title }}</h3>
+
+                <p>{{ article.content }}</p>
+
+                <a href="{% url 'profile' article.author.pk %}">{{ article.author }}</a>
+                <div class="card-footer d-flex justify-content-between">
+                    <h5>Дата: {{ article.created_at }}</h5>
+
+                    {% if not like %}
+                    <a class="text-dark h3" href="{% url 'mark' article.pk 'addlike' %}">
+                        <i class="bi bi-hand-thumbs-up"></i>
+                    </a>
+                    {% else %}
+                    <a class="text-dark h3" href="{% url 'mark' article.pk 'deletelike' %}">
+                        <i class="bi bi-hand-thumbs-up-fill"></i>
+                    </a>
+                    {% endif %}
+
+                    {% if not dislike %}
+                    <a class="text-dark h3" href="{% url 'mark' article.pk 'adddislike' %}">
+                        <i class="bi bi-hand-thumbs-down"></i>
+                    </a>
+                    {% else %}
+                    <a class="text-dark h3" href="{% url 'mark' article.pk 'deletedislike' %}">
+                        <i class="bi bi-hand-thumbs-down-fill"></i>
+                    </a>
+                    {% endif %}
+                    <h5>Просмотры: {{ article.views }} </h5>
+                </div>
+
+            </div>
+
+            {% if request.user.is_authenticated %}
+            <form action="{% url 'save_comment' article.pk %}" method="post">
+                {% csrf_token %}
+                {{ comment_form.text }}
+                <button class="btn btn-dark">Оставить комментарий</button>
+
+            </form>
+            {% else %}
+            <a class="text-dark h3" href="{% url 'login' %}">
+                Чтобы оставить комментарий, Войдите в аккаунт
+            </a>
+
+            {% endif %}
+
+            {% for comment in comments %}
+            <div class="card p-4">
+                <h4>{{ comment.user }}</h4>
+                <span class="small">{{ comment.created_at }}</span>
+                <p>{{ comment.text }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-4">
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock main %}
